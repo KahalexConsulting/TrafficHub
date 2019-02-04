@@ -2,29 +2,29 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mmcloughlin/geohash"
 )
 
 type Data struct {
-	Lat  float64 `json:"Lat"`
-	Long float64 `json:"Long"`
+	Data  string `json:"Data"`
+	Data2 string `json:"Data2"`
 }
 
-type GeoHashData struct {
-	GeoHash string `json:"GeoHash"`
-}
+
 
 func geoHash(c *gin.Context) {
 	var data Data
-	var hash GeoHashData
+	var hash Data
 	c.ShouldBind(&data)
-	hash.GeoHash = geohash.Encode(data.Lat, data.Long)
-	c.JSON(200, hash)
+	hash = data
+	t1 := c.Param("fixed")
+	hash.Data2 = t1
+	c.Redirect(301, "http://example.com")
+	//c.JSON(200, hash)
 }
 
 func main() {
 
 	r := gin.Default()
-	r.POST("/geoHash", geoHash)
-	r.Run() // listen and serve on 0.0.0.0:8080
+	r.GET("/:fixed/", geoHash)
+	r.Run(":8666") // listen and serve on 0.0.0.0:8080
 }
